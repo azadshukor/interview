@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: postgres
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+  order-api:
+    build: ./order-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+  payment-api:
+    build: ./payment-api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - order-api
+  order-webapp:
+    build: ./order-webapp
+    ports:
+      - "3000:3000"
+    depends_on:
+      - payment-api
